@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load i18n humanize static %}
+
+{% block title %}{% trans "Home" %} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero -->
+    <div class="hero text-center mb-5">
+        <h1 class="display-5 fw-bold mb-3">
+            {% if LANGUAGE_CODE == 'fa' %}{{ SITE_NAME }}{% else %}{{ SITE_NAME_EN }}{% endif %}
+        </h1>
+        <p class="lead mb-0">{{ SITE_DESCRIPTION }}</p>
+    </div>
+
+    <!-- Featured Posts -->
+    {% if featured_posts %}
+    <section class="mb-5">
+        <h2 class="h4 fw-bold mb-4">
+            <i class="bi bi-star-fill text-warning"></i> {% trans "Featured Posts" %}
+        </h2>
+        <div class="row g-4">
+            {% for post in featured_posts %}
+            <div class="col-md-4">
+                <div class="card h-100 position-relative">
+                    <span class="badge bg-warning text-dark featured-badge">{% trans "Featured" %}</span>
+                    {% if post.cover_image %}
+                    <img src="{{ post.cover_image.url }}" class="post-cover" alt="{{ post.title }}">
+                    {% else %}
+                    <div class="post-cover d-flex align-items-center justify-content-center bg-secondary-custom">
+                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            {% if post.category %}
+                            <a href="{{ post.category.get_absolute_url }}" class="badge bg-primary text-decoration-none">{{ post.category.name }}</a>
+                            {% endif %}
+                            <small class="text-muted">{{ post.published_at|naturaltime }}</small>
+                        </div>
+                        <h5 class="card-title">
+                            <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-reset">{{ post.title }}</a>
+                        </h5>
+                        <p class="card-text small">{{ post.excerpt|truncatewords:20 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="bi bi-person"></i> {{ post.author.username }}
+                        </small>
+                        <small class="text-muted">
+                            <i class="bi bi-eye"></i> {{ post.views_count }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- All Posts -->
+    <section>
+        <h2 class="h4 fw-bold mb-4">
+            <i class="bi bi-newspaper"></i> {% trans "Latest Posts" %}
+        </h2>
+        
+        {% if posts %}
+        <div class="row g-4">
+            {% for post in posts %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    {% if post.cover_image %}
+                    <a href="{{ post.get_absolute_url }}">
+                        <img src="{{ post.cover_image.url }}" class="post-cover" alt="{{ post.title }}">
+                    </a>
+                    {% else %}
+                    <div class="post-cover d-flex align-items-center justify-content-center bg-secondary-custom">
+                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            {% if post.category %}
+                            <a href="{{ post.category.get_absolute_url }}" class="badge bg-primary text-decoration-none">{{ post.category.name }}</a>
+                            {% endif %}
+                            <small class="text-muted">{{ post.published_at|date:"Y/m/d" }}</small>
+                        </div>
+                        <h5 class="card-title">
+                            <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-reset">{{ post.title }}</a>
+                        </h5>
+                        <p class="card-text small">{{ post.excerpt|truncatewords:18 }}</p>
+                        <div class="d-flex flex-wrap gap-1 mb-2">
+                            {% for tag in post.tags.all %}
+                            <a href="{{ tag.get_absolute_url }}" class="badge bg-secondary text-decoration-none">#{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="bi bi-person"></i> {{ post.author.username }}
+                        </small>
+                        <small class="text-muted">
+                            <i class="bi bi-eye"></i> {{ post.views_count }} · 
+                            <i class="bi bi-chat"></i> {{ post.comments.count }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-journal-x" style="font-size: 4rem;" class="text-muted"></i>
+            <p class="text-muted mt-3">{% trans "No posts published yet." %}</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'blog:post_create' %}" class="btn btn-primary">{% trans "Write the first post" %}</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

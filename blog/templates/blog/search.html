@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Search" %}: {{ query }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h3 fw-bold mb-4">{% trans "Search results for" %}: "{{ query }}"</h1>
+    
+    {% if posts %}
+    <p class="text-muted mb-4">{{ posts|length }} {% trans "results found" %}</p>
+    <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                {% if post.cover_image %}
+                <img src="{{ post.cover_image.url }}" class="post-cover" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-reset">{{ post.title }}</a>
+                    </h5>
+                    <p class="card-text small">{{ post.excerpt|truncatewords:15 }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-search" style="font-size: 3rem;" class="text-muted"></i>
+        <p class="text-muted mt-3">{% trans "No results found." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

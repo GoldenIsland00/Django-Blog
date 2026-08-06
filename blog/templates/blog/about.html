@@ -1,1 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
 
+{% block title %}{% trans "About" %} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h1 class="h3 fw-bold mb-4">{% trans "About Us" %}</h1>
+                    <p class="lead">
+                        {% if LANGUAGE_CODE == 'fa' %}
+                        این یک وبلاگ حرفه‌ای دو زبانه است که با Django ساخته شده است. 
+                        ما از تم روشن و تاریک پشتیبانی می‌کنیم و امکان ثبت‌نام کاربران، 
+                        انتشار پست با کاور و تصاویر، نظرات و دسته‌بندی را فراهم کرده‌ایم.
+                        {% else %}
+                        This is a professional bilingual blog built with Django.
+                        We support light and dark themes, user registration,
+                        posts with cover images, comments, and categories.
+                        {% endif %}
+                    </p>
+                    <hr>
+                    <h5 class="fw-bold">{% trans "Features" %}</h5>
+                    <ul>
+                        <li>{% trans "Bilingual (Persian & English)" %}</li>
+                        <li>{% trans "Dark & Light themes" %}</li>
+                        <li>{% trans "User registration & profiles" %}</li>
+                        <li>{% trans "Cover images for posts" %}</li>
+                        <li>{% trans "Rich text editor (CKEditor)" %}</li>
+                        <li>{% trans "Categories, Tags & Comments" %}</li>
+                        <li>{% trans "Search functionality" %}</li>
+                        <li>{% trans "Responsive design" %}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

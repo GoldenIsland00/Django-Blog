@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}#{{ tag.name }} - {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h3 fw-bold mb-4">#{{ tag.name }}</h1>
+    <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                {% if post.cover_image %}
+                <img src="{{ post.cover_image.url }}" class="post-cover" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-reset">{{ post.title }}</a>
+                    </h5>
+                    <p class="card-text small">{{ post.excerpt|truncatewords:15 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">{% trans "No posts with this tag." %}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
