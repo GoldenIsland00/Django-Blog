@@ -3,9 +3,6 @@
 
 ---
 
-این فایل را می‌توانی به‌طور کامل جایگزین `README.md` فعلی در ریپازیتوری خود کنی:
-
-```markdown
 # 📝 وبلاگ حرفه‌ای دو زبانه با Django
 
 ![Django Version](https://img.shields.io/badge/Django-4.2+-092E20?style=flat&logo=django)
