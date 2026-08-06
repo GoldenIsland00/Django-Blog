@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Login" %} - {{ SITE_NAME }}{% endblock %}
+{% block title %}{% trans "Register" %} - {{ SITE_NAME }}{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="auth-card">
         <div class="card">
             <div class="card-body p-4">
-                <h3 class="text-center fw-bold mb-4">{% trans "Login" %}</h3>
+                <h3 class="text-center fw-bold mb-4">{% trans "Create Account" %}</h3>
                 <form method="post">
                     {% csrf_token %}
                     {% for field in form %}
@@ -18,13 +18,16 @@
                         {% if field.errors %}
                         <div class="text-danger small">{{ field.errors }}</div>
                         {% endif %}
+                        {% if field.help_text %}
+                        <div class="form-text small">{{ field.help_text }}</div>
+                        {% endif %}
                     </div>
                     {% endfor %}
-                    <button type="submit" class="btn btn-primary w-100">{% trans "Login" %}</button>
+                    <button type="submit" class="btn btn-primary w-100">{% trans "Register" %}</button>
                 </form>
                 <p class="text-center mt-3 mb-0">
-                    {% trans "Don't have an account?" %}
-                    <a href="{% url 'accounts:register' %}">{% trans "Register" %}</a>
+                    {% trans "Already have an account?" %}
+                    <a href="{% url 'accounts:login' %}">{% trans "Login" %}</a>
                 </p>
             </div>
         </div>
